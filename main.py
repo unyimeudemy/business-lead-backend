@@ -25,7 +25,7 @@ db.init_app(app)
 
 CORS(app, resources={
     r"/*": {
-        "origins": ["http://localhost:5173", "https://business-leads-frontend.onrender.com"],
+        "origins": ["http://localhost:5173", "https://business-leads-frontend.onrender.com", "https://business-leads-frontend.vercel.app/"],
         "methods": ["GET", "POST", "PUT", "DELETE", "PATCH"]
     }
 })
