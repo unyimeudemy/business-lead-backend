@@ -1,0 +1,22 @@
+[December 01, 2024 16:20:19 WAT] INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[December 01, 2024 16:23:27 WAT] INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[December 01, 2024 16:23:30 WAT] INFO in main: List of businesses successfully retrieved
+[December 01, 2024 16:23:31 WAT] INFO in _internal: 127.0.0.1 - - [01/Dec/2024 16:23:31] "[37mGET /businesses?page=1 HTTP/1.1[0m" 200 -
+[December 01, 2024 16:23:32 WAT] INFO in main: List of businesses successfully retrieved
+[December 01, 2024 16:23:32 WAT] INFO in _internal: 127.0.0.1 - - [01/Dec/2024 16:23:32] "[37mGET /businesses?page=1 HTTP/1.1[0m" 200 -
+[December 01, 2024 16:23:32 WAT] INFO in main: List of industry successfully retrieved
+[December 01, 2024 16:23:32 WAT] INFO in _internal: 127.0.0.1 - - [01/Dec/2024 16:23:32] "[37mGET /industries HTTP/1.1[0m" 200 -
+[December 01, 2024 16:23:33 WAT] INFO in main: List of industry successfully retrieved
+[December 01, 2024 16:23:33 WAT] INFO in _internal: 127.0.0.1 - - [01/Dec/2024 16:23:33] "[37mGET /industries HTTP/1.1[0m" 200 -
+[December 01, 2024 16:24:18 WAT] INFO in main: A search was sucessful
+[December 01, 2024 16:24:18 WAT] INFO in _internal: 127.0.0.1 - - [01/Dec/2024 16:24:18] "[37mGET /search/4.3 HTTP/1.1[0m" 200 -
+[December 01, 2024 16:24:33 WAT] INFO in _internal: 127.0.0.1 - - [01/Dec/2024 16:24:33] "[33mGET /search/4.3+o HTTP/1.1[0m" 404 -
+[December 01, 2024 16:24:35 WAT] INFO in _internal: 127.0.0.1 - - [01/Dec/2024 16:24:35] "[33mGET /search/4.3+o HTTP/1.1[0m" 404 -
+[December 01, 2024 16:24:45 WAT] INFO in main: List of industry successfully retrieved
+[December 01, 2024 16:24:45 WAT] INFO in _internal: 127.0.0.1 - - [01/Dec/2024 16:24:45] "[37mGET /industries HTTP/1.1[0m" 200 -
+[December 01, 2024 16:24:45 WAT] INFO in main: List of businesses successfully retrieved
+[December 01, 2024 16:24:46 WAT] INFO in _internal: 127.0.0.1 - - [01/Dec/2024 16:24:46] "[37mGET /businesses?page=1 HTTP/1.1[0m" 200 -
+[December 01, 2024 16:24:46 WAT] INFO in main: List of industry successfully retrieved
+[December 01, 2024 16:24:47 WAT] INFO in _internal: 127.0.0.1 - - [01/Dec/2024 16:24:47] "[37mGET /industries HTTP/1.1[0m" 200 -
+[December 01, 2024 16:24:47 WAT] INFO in main: List of businesses successfully retrieved
+[December 01, 2024 16:24:47 WAT] INFO in _internal: 127.0.0.1 - - [01/Dec/2024 16:24:47] "[37mGET /businesses?page=1 HTTP/1.1[0m" 200 -

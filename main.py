@@ -6,17 +6,32 @@ from flask_cors import CORS
 from sqlalchemy import func
 from sqlalchemy.types import TypeDecorator, VARCHAR
 from sqlalchemy import func, Column
-# from sqlalchemy_searchable import make_searchable
-
-
+from logging.config import dictConfig
+from logging.handlers import SysLogHandler
+import logging
 
 
 app = Flask(__name__)
 api = Api(app)
 db = SQLAlchemy(app)
-# make_searchable(db.metadata)
 
+PAPERTRAIL_HOST = "logs2.papertrailapp.com"
+PAPERTRAIL_PORT = 20720 
 
+def setup_logging():
+    handler = SysLogHandler(address=(PAPERTRAIL_HOST, PAPERTRAIL_PORT))
+    handler.setFormatter(logging.Formatter(
+        '%(asctime)s [%(levelname)s] %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    ))
+
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)  
+    logger.addHandler(handler)
+
+    app.logger.addHandler(handler)
+
+setup_logging()
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://flask_app_db:Cr1UPlUtgm9gvLO00V4oDGEKwOxakwD4@dpg-ct26k8i3esus73d4nl0g-a.oregon-postgres.render.com:5432/flask_app_db_u2cx'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
@@ -30,6 +45,7 @@ CORS(app, resources={
     }
 })
 
+
 class TSVector(TypeDecorator):
     impl = VARCHAR
 
@@ -40,6 +56,7 @@ class TSVector(TypeDecorator):
 
     def process_result_value(self, value, dialect):
         return value
+
 
 class BusinessModel(db.Model):
     __tablename__ = 'business'
@@ -118,22 +135,24 @@ class Scraper(Resource):
     @marshal_with(business_field)
     def get(self, query):
         result = scrap(query)
+        print("------------------", result)
+        return result
 
-        business_objects = []
-        for item in result:
-            #args = business_put_args.parse_args(req=jsonify(item))
+        # business_objects = []
+        # for item in result:
+        #     #args = business_put_args.parse_args(req=jsonify(item))
 
-            business = BusinessModel()
-            setattr(business, "industry", query)
-            for key, value in item.items():
-                if hasattr(business, key):
-                    setattr(business, key, value)
+        #     business = BusinessModel()
+        #     setattr(business, "industry", query)
+        #     for key, value in item.items():
+        #         if hasattr(business, key):
+        #             setattr(business, key, value)
             
-            db.session.add(business)
-            business_objects.append(business)
+        #     # db.session.add(business)
+        #     business_objects.append(business)
 
-        db.session.commit()
-        return business_objects, 201
+        # # db.session.commit()
+        # return business_objects, 201
 
 
 class Search(Resource):
@@ -145,6 +164,8 @@ class Search(Resource):
 
         if not result:
             abort(404, message="Business not found")
+            app.logger.warning("A search was NOT sucessful")
+        app.logger.info("A search was sucessful")
         return result
 
 
@@ -153,45 +174,37 @@ class GetAll(Resource):
     def get(self):
         page = int(request.args.get('page', 1)) 
         per_page = int(request.args.get('per_page', 12)) 
+        industry = request.args.get('industry')
 
-        paginated_results = BusinessModel.query.paginate(page=page, per_page=per_page, error_out=False)
-
-        if not paginated_results.items:
-            abort(404, message="No businesses found on this page")
-
-        return paginated_results.items 
-
-class GetAllBusinessesByIndusty(Resource):
-    @marshal_with(industry_field)
-    def get(self):
-        page = int(request.args.get('page', 1)) 
-        per_page = int(request.args.get('per_page', 12)) 
-
-        paginated_results = IndustryModel.query.filter_by().paginate(page=page, per_page=per_page, error_out=False)
+        paginated_results = None
+        if industry:
+            paginated_results = BusinessModel.query.filter_by(industry=industry).paginate(page=page, per_page=per_page, error_out=False)
+        else:
+            paginated_results = BusinessModel.query.paginate(page=page, per_page=per_page, error_out=False)
 
         if not paginated_results.items:
-            abort(404, message="No industry found on this page")
+            app.logger.warning("List of businesses NOT successfully retrieved")
+            abort(404, message="List of businesses NOT successfully retrieved")
 
+        app.logger.info("List of businesses successfully retrieved")
         return paginated_results.items 
-
 
 class GetIndustries(Resource):
     @marshal_with(industry_field)
     def get(self):
-        print("========================== heer")
-
         results = IndustryModel.query.all()
 
         if not results:
+            app.logger.warning("List of industries NOT successfully retrieved")
             abort(404, message="No industry found on this page")
 
+        app.logger.info("List of industry successfully retrieved")
         return results
 
 
 api.add_resource(Scraper, "/scrap/<string:query>")
 api.add_resource(Search, "/search/<string:query>")
 api.add_resource(GetAll, "/businesses")
-api.add_resource(GetAllBusinessesByIndusty, "/businesses/industry")
 api.add_resource(GetIndustries, "/industries")
 
 
